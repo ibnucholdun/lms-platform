@@ -7,6 +7,7 @@ import { LayoutDashboard } from "lucide-react";
 import TitleForm from "./_components/TitleForm";
 import DescriptionForm from "./_components/DescriptionForm";
 import ImageForm from "./_components/ImageForm";
+import CategoryForm from "./_components/CategoryForm";
 
 type Props = {
   params: {
@@ -23,6 +24,12 @@ const CourseIdPage: React.FC<Props> = async ({ params }) => {
   const course = await prisma.course.findUnique({
     where: {
       id: params.courseId,
+    },
+  });
+
+  const categories = await prisma.category.findMany({
+    orderBy: {
+      name: "asc",
     },
   });
 
@@ -62,6 +69,14 @@ const CourseIdPage: React.FC<Props> = async ({ params }) => {
           <TitleForm initialData={course} courseId={course.id} />
           <DescriptionForm initialData={course} courseId={course.id} />
           <ImageForm initialData={course} courseId={course.id} />
+          <CategoryForm
+            initialData={course}
+            courseId={course.id}
+            options={categories.map((category) => ({
+              label: category.name,
+              value: category.id,
+            }))}
+          />
         </div>
       </div>
     </div>

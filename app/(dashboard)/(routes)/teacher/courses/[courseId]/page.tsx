@@ -3,12 +3,18 @@ import prisma from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { IconBadge } from "@/components/icon-badge";
-import { CircleDollarSign, LayoutDashboard, ListChecks } from "lucide-react";
+import {
+  CircleDollarSign,
+  File,
+  LayoutDashboard,
+  ListChecks,
+} from "lucide-react";
 import TitleForm from "./_components/TitleForm";
 import DescriptionForm from "./_components/DescriptionForm";
 import ImageForm from "./_components/ImageForm";
 import CategoryForm from "./_components/CategoryForm";
 import PriceForm from "./_components/PriceForm";
+import AttachmentForm from "./_components/AttachmentForm";
 
 type Props = {
   params: {
@@ -25,6 +31,13 @@ const CourseIdPage: React.FC<Props> = async ({ params }) => {
   const course = await prisma.course.findUnique({
     where: {
       id: params.courseId,
+    },
+    include: {
+      attachments: {
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
     },
   });
 
@@ -93,6 +106,13 @@ const CourseIdPage: React.FC<Props> = async ({ params }) => {
               <h2 className="text-xl">Sell your course</h2>
             </div>
             <PriceForm initialData={course} courseId={course.id} />
+          </div>
+          <div className="">
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={File} />
+              <h2 className="text-xl">Resources & Attachments</h2>
+            </div>
+            <AttachmentForm initialData={course} courseId={course.id} />
           </div>
         </div>
       </div>

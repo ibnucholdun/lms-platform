@@ -8,6 +8,7 @@ import React from "react";
 import ChapterTitleForm from "./_components/ChapterTitleForm";
 import ChapterDescriptionForm from "./_components/ChapterDescriptionForm";
 import ChapterAccessForm from "./_components/ChapterAccessForm";
+import ChapterVideoForm from "./_components/ChapterVideoForm";
 
 type Props = {
   params: {
@@ -78,7 +79,7 @@ const ChapterIdPage = async ({ params }: Props) => {
             />
           </div>
           <div className="">
-            <div className="flex items-center " gap-x-2>
+            <div className="flex items-center gap-x-2">
               <IconBadge icon={Eye} />
               <h2 className="text-xl">Access Settings</h2>
             </div>
@@ -94,6 +95,11 @@ const ChapterIdPage = async ({ params }: Props) => {
             <IconBadge icon={Video} />
             <h2 className="text-xl">Add a video</h2>
           </div>
+          <ChapterVideoForm
+            initialData={chapter}
+            courseId={params.courseId}
+            chapterId={params.chapterId}
+          />
         </div>
       </div>
     </div>

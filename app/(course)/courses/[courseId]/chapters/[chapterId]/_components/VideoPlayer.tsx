@@ -24,11 +24,40 @@ const VideoPlayer: React.FC<Props> = ({
   playbackId,
   title,
   courseId,
+  chapterId,
   nextChapterId,
   isLocked,
   completedOnEnd,
 }) => {
   const [isReady, setIsReady] = useState(false);
+  const router = useRouter();
+  const confetti = useConfettiStore();
+
+  const onEnd = async () => {
+    try {
+      if (completedOnEnd) {
+        await axios.put(
+          `/api/courses/${courseId}/chapters/${chapterId}/progress`,
+          {
+            isCompleted: true,
+          }
+        );
+
+        if (!nextChapterId) {
+          confetti.onOpen();
+        }
+
+        toast.success("Chapter completed successfully");
+        router.refresh();
+
+        if (nextChapterId) {
+          router.push(`/courses/${courseId}/chapters/${nextChapterId}`);
+        }
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
+  };
 
   return (
     <div className="relative aspect-video">
@@ -51,7 +80,7 @@ const VideoPlayer: React.FC<Props> = ({
           playbackId={playbackId}
           className={cn(!isReady && "hidden")}
           onCanPlay={() => setIsReady(true)}
-          onEnded={() => {}}
+          onEnded={onEnd}
           autoPlay
         />
       )}

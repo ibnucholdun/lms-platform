@@ -5,11 +5,37 @@ import { redirect } from "next/navigation";
 import React from "react";
 import CourseSidebar from "./_components/CourseSidebar";
 import CourseNavbar from "./_components/CourseNavbar";
+import { Metadata, ResolvingMetadata } from "next";
 
 type Props = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   params: { courseId: string };
 };
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const course: any = await prisma.course.findUnique({
+    where: {
+      id: params.courseId,
+    },
+    include: {
+      chapters: {
+        where: {
+          isPublished: true,
+        },
+        orderBy: {
+          position: "asc",
+        },
+      },
+    },
+  });
+
+  return {
+    title: "LMS Platform | " + course.title,
+  };
+}
 
 const CourseLayout: React.FC<Props> = async ({ children, params }) => {
   const { userId } = auth();

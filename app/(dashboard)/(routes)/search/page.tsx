@@ -6,12 +6,17 @@ import getCourses from "@/actions/getCourses";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import CoursesList from "./_components/CoursesList";
+import { Metadata } from "next";
 
 type Props = {
   searchParams: {
     title: string;
     categoryId: string;
   };
+};
+
+export const metadata: Metadata = {
+  title: "LMS Platform | Search",
 };
 
 const SearchPage: React.FC<Props> = async ({ searchParams }) => {
